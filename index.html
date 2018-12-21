@@ -10,14 +10,53 @@
     <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
 
     <script type="text/javascript" src="javascripts/modernizr.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+
     <script type="text/javascript">
       $(document).ready(function () {
-        $('#main_content').headsmart()
+        $('#main_content').headsmart();
+        const currentURL = new URL(window.location.href);
+        const symbol = currentURL.searchParams.get("symbol");
+        let range = currentURL.searchParams.get("range");
+        range = range ? range : 1;
+        
+        const targetURL = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=' + symbol + '&apikey=O6HRG1K9AZSO5FQ5';
+
+
+        $.getJSON(targetURL, function (data) {
+        const data1 = [];
+            for (let [key, value] of Object.entries(data["Time Series (Daily)"])) {
+                const item = [];
+                item.push(new Date(key).getTime());
+                item.push(Number.parseInt(value["4. close"]));
+                data1.unshift(item);
+            }
+            // Create the chart
+            Highcharts.stockChart('container', {
+                rangeSelector: {
+                    selected: range
+                },
+                title: {
+                    text: 'Price of ' + symbol
+                },
+                series: [{
+                    name: symbol,
+                    data: data1,
+                    tooltip: {
+                        valueDecimals: 2
+                    }
+                }]
+            });
+        });
+        
       })
     </script>
-    <title>Jluxyw.github.com by jluxyw</title>
+    <title>Jluxyw.github.com by Evan</title>
   </head>
 
   <body>
@@ -28,7 +67,7 @@
         <span class="ribbon-outer">
           <span class="ribbon-inner">
             <h1>Jluxyw.github.com</h1>
-            <h2>test</h2>
+            <h2>Evan</h2>
           </span>
           <span class="left-tail"></span>
           <span class="right-tail"></span>
@@ -45,7 +84,8 @@
 
 
       <section id="main_content">
-        <h3>Welcome to My Pages.</h3>
+        <h3>Welcome to Evan's Pages.</h3>
+        <div id="container" style="height: 400px; min-width: 310px"></div>
 
 <p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
